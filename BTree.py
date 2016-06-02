@@ -57,19 +57,29 @@ class BTreeNode:
                         overflowedChildIndex = i
 
                 # Get the new median value
-                medianIndex = len(c.keys)/2
-                median = c.keys[medianIndex]
+                medianIndex = len(overflowedChild.keys)/2
+                median = overflowedChild.keys[medianIndex]
 
                 # Get split children
-                first = BTreeNode(c.isLeaf)
-                first.keys = c.keys[0:medianIndex]
-                second = BTreeNode(c.isLeaf)
-                second.keys = c.keys[medianIndex+1:len(c.keys)]
-                self.children[i] = first
-                self.children.insert(i+1, second)
+                first = BTreeNode(overflowedChild.isLeaf)
+                first.keys = overflowedChild.keys[0:medianIndex]
+                second = BTreeNode(overflowedChild.isLeaf)
+                second.keys = overflowedChild.keys[medianIndex+1:len(c.keys)]
+                self.children[overflowedChildIndex] = first
+                self.children.insert(overflowedChildIndex+1, second)
 
                 # I should get the new median and I'll return whether or not I overflowed
-                self.keys.append(median)
+                # self.keys.append(median)
+                medianInserted = False
+                for i, k in enumerate(self.keys):
+                    if k > median:
+                        self.keys.insert(i, key)
+                        medianInserted = True
+                        break
+
+                if not medianInserted:
+                    self.keys.append(key)
+
                 return len(self.keys) > maxSize
 
             return False
@@ -77,7 +87,7 @@ class BTreeNode:
     def display(self):
         global spaces
         #TODO: isLeaf being set for everything but the root-node
-        # print "Leaf" if self.isLeaf else "Non-leaf"
+        print "%s Leaf" % (genSpaces()) if self.isLeaf else "%s Non-leaf" % (genSpaces())
         print "%s %s" % (genSpaces(), self.keys)
 
         for i, c in enumerate(self.children):
@@ -123,11 +133,10 @@ class BTree:
                 newRoot = BTreeNode(False)
                 medianIndex = len(self.root.keys)/2
                 median = self.root.keys[medianIndex]
-                shouldBeLeaf = self.root.children[0].isLeaf
-                first = BTreeNode(shouldBeLeaf)
+                first = BTreeNode(False)
                 first.keys = self.root.keys[0:medianIndex]
                 first.children = self.root.children[0:medianIndex+1]
-                second = BTreeNode(shouldBeLeaf)
+                second = BTreeNode(False)
                 second.keys = self.root.keys[medianIndex+1:len(self.root.keys)]
                 second.children = self.root.children[medianIndex+1:len(self.root.keys)+1]
                 newRoot.children.append(first)
@@ -170,11 +179,13 @@ if __name__ == "__main__":
     tree.insert(5)
     tree.insert(27)
     tree.insert(30)
-    tree.insert(35)
+    # tree.insert(35)
     tree.insert(36)
     tree.insert(37)
     tree.insert(40)
     tree.insert(45)
     tree.insert(46)
     tree.insert(47)
+    tree.insert(11) # TODO: These lines cause 35 to be present twice
+    tree.insert(24)
     tree.display()
