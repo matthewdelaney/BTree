@@ -53,23 +53,23 @@ class BTreeNode:
                 # Find it and store its index
                 for i, c in enumerate(self.children):
                     if len(c.keys) > maxSize:
-                        overflowedChild = c
-                        overflowedChildIndex = i
+                        overflowingChild = c
+                        overflowingChildIndex = i
                         break
                         
                 # Get the new median value
-                medianIndex = len(overflowedChild.keys)/2
-                median = overflowedChild.keys[medianIndex]
+                medianIndex = len(overflowingChild.keys)/2
+                median = overflowingChild.keys[medianIndex]
 
                 # Get split children
-                first = BTreeNode(overflowedChild.isLeaf)
-                first.keys = overflowedChild.keys[0:medianIndex]
-                first.children = overflowedChild.children[0:medianIndex+1]
-                second = BTreeNode(overflowedChild.isLeaf)
-                second.keys = overflowedChild.keys[medianIndex+1:len(c.keys)]
-                second.children = overflowedChild.children[medianIndex+1:len(overflowedChild.children)]
-                self.children[overflowedChildIndex] = first
-                self.children.insert(overflowedChildIndex+1, second)
+                first = BTreeNode(overflowingChild.isLeaf)
+                first.keys = overflowingChild.keys[0:medianIndex]
+                first.children = overflowingChild.children[0:medianIndex+1]
+                second = BTreeNode(overflowingChild.isLeaf)
+                second.keys = overflowingChild.keys[medianIndex+1:len(c.keys)]
+                second.children = overflowingChild.children[medianIndex+1:len(overflowingChild.children)]
+                self.children[overflowingChildIndex] = first
+                self.children.insert(overflowingChildIndex+1, second)
 
                 # I should get the new median and I'll return whether or not I overflowed
                 # self.keys.append(median)
@@ -146,6 +146,13 @@ class BTree:
                 newRoot.children.append(second)
                 newRoot.keys.append(median)
                 self.root = newRoot
+
+    def delete(self, key):
+        if self.root.isLeaf:
+            self.root.keys.remove(key)
+        else:
+            underflow = self.root.delete(key)
+
 
     def display(self):
         self.root.display()
