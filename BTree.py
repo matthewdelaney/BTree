@@ -1,4 +1,5 @@
 maxSize = 3
+minSize = maxSize/2
 spaces = 0
 
 def genSpaces():
@@ -19,7 +20,6 @@ class BTreeNode:
         # Am I a leaf?
         if self.isLeaf:
             # I am, so insert value and return whether or not I caused an overflow
-            # self.keys.append(key)
             inserted = False
             for i, k in enumerate(self.keys):
                 if k > key:
@@ -55,7 +55,8 @@ class BTreeNode:
                     if len(c.keys) > maxSize:
                         overflowedChild = c
                         overflowedChildIndex = i
-
+                        break
+                        
                 # Get the new median value
                 medianIndex = len(overflowedChild.keys)/2
                 median = overflowedChild.keys[medianIndex]
@@ -63,8 +64,10 @@ class BTreeNode:
                 # Get split children
                 first = BTreeNode(overflowedChild.isLeaf)
                 first.keys = overflowedChild.keys[0:medianIndex]
+                first.children = overflowedChild.children[0:medianIndex+1]
                 second = BTreeNode(overflowedChild.isLeaf)
                 second.keys = overflowedChild.keys[medianIndex+1:len(c.keys)]
+                second.children = overflowedChild.children[medianIndex+1:len(overflowedChild.children)]
                 self.children[overflowedChildIndex] = first
                 self.children.insert(overflowedChildIndex+1, second)
 
@@ -73,12 +76,12 @@ class BTreeNode:
                 medianInserted = False
                 for i, k in enumerate(self.keys):
                     if k > median:
-                        self.keys.insert(i, key)
+                        self.keys.insert(i, median)
                         medianInserted = True
                         break
 
                 if not medianInserted:
-                    self.keys.append(key)
+                    self.keys.append(median)
 
                 return len(self.keys) > maxSize
 
@@ -138,54 +141,31 @@ class BTree:
                 first.children = self.root.children[0:medianIndex+1]
                 second = BTreeNode(False)
                 second.keys = self.root.keys[medianIndex+1:len(self.root.keys)]
-                second.children = self.root.children[medianIndex+1:len(self.root.keys)+1]
+                second.children = self.root.children[medianIndex+1:len(self.root.children)]
                 newRoot.children.append(first)
                 newRoot.children.append(second)
                 newRoot.keys.append(median)
                 self.root = newRoot
-
-                # We need to create a new root and split the current one
-                # PROBLEM: We actually need to split the root appropriately
-                # which, after inserting 47, contains four values
-                # 1) Find the appropriate descendent
-                # overflowedChild = None
-                # for c in self.root.children:
-                #     if len(c.keys) > maxSize:
-                #         overflowedChild = c
-                # if overflowedChild:
-                #     # 2) Split it and insert the new median into self
-                #     leafStatus = overflowedChild.isLeaf
-                #     medianIndex = len(overflowedChild.keys)/2
-                #     median = overflowedChild.keys[medianIndex]
-                #     first = BTreeNode(leafStatus)
-                #     first.keys = overflowedChild.keys[0:medianIndex]
-                #     second = BTreeNode(leafStatus)
-                #     second.keys = overflowedChild.keys[medianIndex+1:len(overflowedChild.keys)]
-                #     newRoot = BTreeNode(False)
-                #     newRoot.children.append(first)
-                #     newRoot.children.append(second)
-                #     newRoot.keys.append(median)
-                #     self.root = newRoot
 
     def display(self):
         self.root.display()
 
 if __name__ == "__main__":
     tree = BTree()
+    tree.insert(2000)
     tree.insert(10)
     tree.insert(20)
-    tree.insert(25)
-    tree.insert(26)
-    tree.insert(5)
-    tree.insert(27)
     tree.insert(30)
-    # tree.insert(35)
-    tree.insert(36)
-    tree.insert(37)
     tree.insert(40)
-    tree.insert(45)
-    tree.insert(46)
-    tree.insert(47)
-    tree.insert(11) # TODO: These lines cause 35 to be present twice
-    tree.insert(24)
+    tree.insert(50)
+    tree.insert(60)
+    tree.insert(70)
+    tree.insert(80)
+    tree.insert(90)
+    tree.insert(100)
+    tree.insert(110)
+    tree.insert(120)
+    tree.insert(130)
+    tree.insert(11)
+    tree.insert(25)
     tree.display()
