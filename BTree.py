@@ -89,7 +89,7 @@ class BTreeNode:
 
     def display(self):
         global spaces
-        #TODO: isLeaf being set for everything but the root-node
+
         print "%s Leaf" % (genSpaces()) if self.isLeaf else "%s Non-leaf" % (genSpaces())
         print "%s %s" % (genSpaces(), self.keys)
 
@@ -152,7 +152,8 @@ class BTree:
             self.root.keys.remove(key)
         else:
             underflow = self.root.delete(key)
-
+            if underflow:
+                # Deal with underflow
 
     def display(self):
         self.root.display()
