@@ -87,6 +87,41 @@ class BTreeNode:
 
             return False
 
+    def delete(self, key):
+        # Get index of key to remove if it's in this node
+        try:
+            idx = self.keys.index(key)
+        except:
+            found = False
+            # Key isn't in this node so find appropriate key and recurse down
+            for i, k in enumerate(self.keys):
+                if k > key:
+                    found = True
+                    underflow = self.children[i].delete(key)
+                    break
+
+            if not found:
+                underflow = self.children[len(self.children)-1].delete(key)
+
+            if underflow:
+                print "TODO: Handle underflow"
+                # TODO: Handle underflow
+
+        else:
+            # Key is in this node so remove it and handle underflow if necessary
+            # - First get left and right child node references
+            lenChildren = len(self.children)
+
+            if idx < lenChildren:
+                left = self.children[idx]
+            if idx+1 < lenChildren:
+                right = self.children[idx+1]
+            # - Remove the key
+            self.keys.remove(key)
+
+            # Return whether or not we caused an underflow
+            return len(self.keys) < minSize
+
     def display(self):
         global spaces
 
@@ -154,6 +189,7 @@ class BTree:
             underflow = self.root.delete(key)
             if underflow:
                 # Deal with underflow
+                pass
 
     def display(self):
         self.root.display()
