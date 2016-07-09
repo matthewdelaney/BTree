@@ -107,8 +107,8 @@ class BTreeNode:
                 underflow = self.children[len(self.children)-1].delete(key)
 
             if underflow:
-                print "TODO: Handle underflow"
-                # TODO: Handle underflow
+                print "Handle underflow"
+
                 if i-1 >= 0 and len(self.children[i-1].keys) > minSize:
                     print "Left sibling has sufficient children"
                     # Move keys[i] into underflowing child
@@ -120,14 +120,31 @@ class BTreeNode:
                     self.children[i-1].delete(self.keys[i-1])
                 elif i+1 < len(self.children) and len(self.children[i+1].keys) > minSize:
                     print "Right sibling has sufficient children"
-                    print self.keys[i]
+                    # print self.keys[i]
                     self.children[i].insert(self.keys[i])
-                    print self.children[i+1].keys
+                    # print self.children[i+1].keys
                     self.keys[i] = self.children[i+1].keys[0]
                     self.children[i+1].delete(self.keys[i])
                 else:
                     print "Neither sibling has sufficient children"
+                    # Insert predecessor key into its left child then
+                    self.children[i-1].insert(self.keys[i-1])
+                    # remove it from self.keys and shift everything after
+                    # it back one place.
+                    for j in range(i-1, len(self.keys)-1):
+                        self.keys[j] = self.keys[j+1]
 
+                    self.keys.remove(self.keys[len(self.keys)-1])
+
+                    # Do the same with the children except
+                    # we aren't overwriting the one we inserted into
+                    # at the start of this branch
+                    for j in range(i, len(self.children)-1):
+                        self.children[j] = self.children[j+1]
+                    
+                    # Remove last child which will not have been overwritten
+                    # by the loop above
+                    self.children.remove(self.children[len(self.children)-1])
 
         else:
             # Key is in this node so remove it and handle underflow if necessary
