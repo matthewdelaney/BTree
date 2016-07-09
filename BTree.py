@@ -96,16 +96,38 @@ class BTreeNode:
             # Key isn't in this node so find appropriate key and recurse down
             for i, k in enumerate(self.keys):
                 if k > key:
+                    print "Found"
                     found = True
                     underflow = self.children[i].delete(key)
                     break
 
             if not found:
+                print "Not found"
+                i = len(self.children)-1
                 underflow = self.children[len(self.children)-1].delete(key)
 
             if underflow:
                 print "TODO: Handle underflow"
                 # TODO: Handle underflow
+                if i-1 >= 0 and len(self.children[i-1].keys) > minSize:
+                    print "Left sibling has sufficient children"
+                    # Move keys[i] into underflowing child
+                    # print self.keys[i-1]
+                    self.children[i].insert(self.keys[i-1])
+                    # Move largest value of left sibling into keys[i]
+                    # print self.children[i-1].keys
+                    self.keys[i-1] = self.children[i-1].keys[len(self.children[i-1].keys)-1]
+                    self.children[i-1].delete(self.keys[i-1])
+                elif i+1 < len(self.children) and len(self.children[i+1].keys) > minSize:
+                    print "Right sibling has sufficient children"
+                    print self.keys[i]
+                    self.children[i].insert(self.keys[i])
+                    print self.children[i+1].keys
+                    self.keys[i] = self.children[i+1].keys[0]
+                    self.children[i+1].delete(self.keys[i])
+                else:
+                    print "Neither sibling has sufficient children"
+
 
         else:
             # Key is in this node so remove it and handle underflow if necessary
@@ -189,7 +211,7 @@ class BTree:
             underflow = self.root.delete(key)
             if underflow:
                 # Deal with underflow
-                pass
+                print "(root) TODO: Handle underflow"
 
     def display(self):
         self.root.display()
