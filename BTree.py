@@ -127,24 +127,46 @@ class BTreeNode:
                     self.children[i+1].delete(self.keys[i])
                 else:
                     print "Neither sibling has sufficient children"
-                    # Insert predecessor key into its left child then
-                    self.children[i-1].insert(self.keys[i-1])
-                    # remove it from self.keys and shift everything after
-                    # it back one place.
-                    for j in range(i-1, len(self.keys)-1):
-                        self.keys[j] = self.keys[j+1]
+                    if i-1 >= 0:
+                        # Insert predecessor key into its left child then
+                        self.children[i-1].insert(self.keys[i-1])
+                        # Remove it from self.keys and shift everything after
+                        # it back one place.
+                        for j in range(i-1, len(self.keys)-1):
+                            self.keys[j] = self.keys[j+1]
 
-                    self.keys.remove(self.keys[len(self.keys)-1])
+                        self.keys.remove(self.keys[len(self.keys)-1])
 
-                    # Do the same with the children except
-                    # we aren't overwriting the one we inserted into
-                    # at the start of this branch
-                    for j in range(i, len(self.children)-1):
-                        self.children[j] = self.children[j+1]
-                    
-                    # Remove last child which will not have been overwritten
-                    # by the loop above
-                    self.children.remove(self.children[len(self.children)-1])
+                        # Do the same with the children except
+                        # we aren't overwriting the one we inserted into
+                        # at the start of this branch
+                        for j in range(i, len(self.children)-1):
+                            self.children[j] = self.children[j+1]
+                        
+                        # Remove last child which will not have been overwritten
+                        # by the loop above
+                        self.children.remove(self.children[len(self.children)-1])
+                    else:
+                        # Insert key into right child
+                        self.children[i+1].insert(self.keys[i])
+                        # Remove it from self.keys and shift everything after
+                        # it back one place.
+                        # Remove it from self.keys and shift everything after
+                        # it back one place.
+                        for j in range(i, len(self.keys)-1):
+                            self.keys[j] = self.keys[j+1]
+
+                        self.keys.remove(self.keys[len(self.keys)-1])
+
+                        # Do the same with the children except
+                        # we aren't overwriting the one we inserted into
+                        # at the start of this branch
+                        for j in range(i, len(self.children)-1):
+                            self.children[j] = self.children[j+1]
+                        
+                        # Remove last child which will not have been overwritten
+                        # by the loop above
+                        self.children.remove(self.children[len(self.children)-1])
 
                     # Indicate whether or not we caused an underflow in this
                     # node
