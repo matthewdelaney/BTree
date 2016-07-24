@@ -146,6 +146,10 @@ class BTreeNode:
                     # by the loop above
                     self.children.remove(self.children[len(self.children)-1])
 
+                    # Indicate whether or not we caused an underflow in this
+                    # node
+                    return len(self.keys) < minSize
+
         else:
             # Key is in this node so remove it and handle underflow if necessary
             # - First get left and right child node references
@@ -228,7 +232,8 @@ class BTree:
             underflow = self.root.delete(key)
             if underflow:
                 # Deal with underflow
-                print "(root) TODO: Handle underflow"
+                print "(root) Handle underflow"
+                self.root = self.root.children[0]
 
     def display(self):
         self.root.display()
