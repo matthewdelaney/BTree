@@ -1,4 +1,4 @@
-maxSize = 3
+maxSize = 4
 minSize = maxSize/2
 spaces = 0
 
@@ -130,7 +130,13 @@ class BTreeNode:
                     if i-1 >= 0:
                         # Insert predecessor key into its left child then
                         self.children[i-1].insert(self.keys[i-1])
-                        # Remove it from self.keys and shift everything after
+
+                        # move all keys and children from self.children[i] (the underflowed node)
+                        # into the same left child as above
+                        self.children[i-1].keys = self.children[i-1].keys + self.children[i].keys
+                        self.children[i-1].children = self.children[i-1].children + self.children[i].children
+
+                        # remove it from self.keys and shift everything after
                         # it back one place.
                         for j in range(i-1, len(self.keys)-1):
                             self.keys[j] = self.keys[j+1]
@@ -147,10 +153,14 @@ class BTreeNode:
                         # by the loop above
                         self.children.remove(self.children[len(self.children)-1])
                     else:
-                        # Insert key into right child
+                        # Insert key into right child then
                         self.children[i+1].insert(self.keys[i])
-                        # Remove it from self.keys and shift everything after
-                        # it back one place.
+
+                        # move all keys and children from self.children[i] (the underflowed node)
+                        # into the same left child as above
+                        self.children[i+1].keys = self.children[i].keys + self.children[i+1].keys
+                        self.children[i+1].children = self.children[i].children + self.children[i+1].children
+
                         # Remove it from self.keys and shift everything after
                         # it back one place.
                         for j in range(i, len(self.keys)-1):
@@ -198,7 +208,8 @@ class BTreeNode:
             spaces += 1
             c.display()
 
-        spaces -= 1
+        if spaces > 0:
+            spaces -= 1
 
 class BTree:
     def __init__(self):
@@ -255,7 +266,8 @@ class BTree:
             if underflow:
                 # Deal with underflow
                 print "(root) Handle underflow"
-                self.root = self.root.children[0]
+                if len(self.root.keys) == 0:
+                    self.root = self.root.children[0]
 
     def display(self):
         self.root.display()
