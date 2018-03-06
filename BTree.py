@@ -1,4 +1,4 @@
-maxSize = 4
+maxSize = 3
 minSize = maxSize/2
 spaces = 0
 
@@ -187,12 +187,39 @@ class BTreeNode:
             # - First get left and right child node references
             lenChildren = len(self.children)
 
+            left = None
+            right = None
+
             if idx < lenChildren:
                 left = self.children[idx]
             if idx+1 < lenChildren:
                 right = self.children[idx+1]
+
             # - Remove the key
             self.keys.remove(key)
+
+            # TODO: Handle moving children
+            if left and right:
+                lenLeft = len(left.keys)
+                lenRight = len(right.keys)
+
+                if lenLeft + lenRight <= maxSize:
+                    # Left child can absorb right child
+
+                    # Append keys from right child into left child
+                    for k in right.keys:
+                        left.keys.append(k)
+
+                    # Append children right child into left child
+                    for c in right.children:
+                        left.children.append(c)
+
+                    self.children.remove(right)
+                else:
+                    # Not enough space in left child. Append to right child and choose a
+                    # median value. Insert the median value into self.keys
+                    print "TODO: Handle"
+                    pass
 
             # Return whether or not we caused an underflow
             return len(self.keys) < minSize
