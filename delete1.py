@@ -1,3 +1,4 @@
+# Set up a BTree to allow testing of delete functionality in REPL.
 from BTree import BTree
 import random
 
