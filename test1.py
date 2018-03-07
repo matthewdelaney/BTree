@@ -1,3 +1,4 @@
+# Simple test program
 from BTree import BTree
 
 if __name__ == "__main__":
