@@ -256,34 +256,12 @@ class BTree:
                 self.root.keys.append(key)
 
             if len(self.root.keys) > maxSize:
-                newRoot = BTreeNode(False)
-                medianIndex = len(self.root.keys)/2
-                median = self.root.keys[medianIndex]
-                first = BTreeNode(True)
-                first.keys = self.root.keys[0:medianIndex]
-                second = BTreeNode(True)
-                second.keys = self.root.keys[medianIndex+1:len(self.root.keys)]
-                newRoot.children.append(first)
-                newRoot.children.append(second)
-                newRoot.keys.append(median)
-                self.root = newRoot
+                self._split_root(True)
         else:
             overflow = self.root.insert(key)
 
             if overflow:
-                newRoot = BTreeNode(False)
-                medianIndex = len(self.root.keys)/2
-                median = self.root.keys[medianIndex]
-                first = BTreeNode(False)
-                first.keys = self.root.keys[0:medianIndex]
-                first.children = self.root.children[0:medianIndex+1]
-                second = BTreeNode(False)
-                second.keys = self.root.keys[medianIndex+1:len(self.root.keys)]
-                second.children = self.root.children[medianIndex+1:len(self.root.children)]
-                newRoot.children.append(first)
-                newRoot.children.append(second)
-                newRoot.keys.append(median)
-                self.root = newRoot
+                self._split_root(False)
 
     def delete(self, key):
         if self.root.isLeaf:
@@ -298,6 +276,24 @@ class BTree:
 
     def display(self):
         self.root.display()
+
+    def _split_root(self, is_leaf):
+                newRoot = BTreeNode(False)
+                medianIndex = len(self.root.keys)/2
+                median = self.root.keys[medianIndex]
+                first = BTreeNode(is_leaf)
+                first.keys = self.root.keys[0:medianIndex]
+                if not is_leaf:
+                    first.children = self.root.children[0:medianIndex+1]
+                second = BTreeNode(is_leaf)
+                second.keys = self.root.keys[medianIndex+1:len(self.root.keys)]
+                if not is_leaf:
+                    second.children = self.root.children[medianIndex+1:len(self.root.children)]
+                newRoot.children.append(first)
+                newRoot.children.append(second)
+                newRoot.keys.append(median)
+                self.root = newRoot
+
 
 if __name__ == "__main__":
     tree = BTree()
