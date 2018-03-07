@@ -30,10 +30,7 @@ class BTreeNode:
             if not inserted:
                 self.keys.append(key)
 
-            if len(self.keys) > maxSize:
-                return True
-            else:
-                return False
+            return len(self.keys) > maxSize
         else:
             # I'm not, so recurse down and see if overflow flag comes back (and handle it if it's True)
             inserted = False
