@@ -55,7 +55,7 @@ class BTreeNode:
                         break
                         
                 # Get the new median value
-                medianIndex = len(overflowingChild.keys)/2
+                medianIndex = len(overflowingChild.keys)//2
                 median = overflowingChild.keys[medianIndex]
 
                 # Get split children
@@ -93,21 +93,21 @@ class BTreeNode:
             # Key isn't in this node so find appropriate key and recurse down
             for i, k in enumerate(self.keys):
                 if k > key:
-                    print "Found"
+                    print("Found")
                     found = True
                     underflow = self.children[i].delete(key)
                     break
 
             if not found:
-                print "Not found"
+                print("Not found")
                 i = len(self.children)-1
                 underflow = self.children[len(self.children)-1].delete(key)
 
             if underflow:
-                print "Handle underflow"
+                print("Handle underflow")
 
                 if i-1 >= 0 and len(self.children[i-1].keys) > minSize:
-                    print "Left sibling has sufficient children"
+                    print("Left sibling has sufficient children")
                     # Move keys[i] into underflowing child
                     # print self.keys[i-1]
                     self.children[i].insert(self.keys[i-1])
@@ -116,14 +116,14 @@ class BTreeNode:
                     self.keys[i-1] = self.children[i-1].keys[len(self.children[i-1].keys)-1]
                     self.children[i-1].delete(self.keys[i-1])
                 elif i+1 < len(self.children) and len(self.children[i+1].keys) > minSize:
-                    print "Right sibling has sufficient children"
+                    print("Right sibling has sufficient children")
                     # print self.keys[i]
                     self.children[i].insert(self.keys[i])
                     # print self.children[i+1].keys
                     self.keys[i] = self.children[i+1].keys[0]
                     self.children[i+1].delete(self.keys[i])
                 else:
-                    print "Neither sibling has sufficient children"
+                    print("Neither sibling has sufficient children")
                     if i-1 >= 0:
                         # Insert predecessor key into its left child then
                         self.children[i-1].insert(self.keys[i-1])
@@ -215,7 +215,7 @@ class BTreeNode:
                 else:
                     # Not enough space in left child. Append to right child and choose a
                     # median value. Insert the median value into self.keys
-                    print "TODO: Handle"
+                    print("TODO: Handle")
                     pass
 
             # Return whether or not we caused an underflow
@@ -224,11 +224,11 @@ class BTreeNode:
     def display(self):
         global spaces
 
-        print "%s Leaf" % (genSpaces()) if self.isLeaf else "%s Non-leaf" % (genSpaces())
-        print "%s %s" % (genSpaces(), self.keys)
+        print("%s Leaf" % genSpaces() if self.isLeaf else "%s Non-leaf" % (genSpaces()))
+        print("%s %s" % (genSpaces(), self.keys))
 
         for i, c in enumerate(self.children):
-            print "%s Child(%d)->" % (genSpaces(), i)
+            print("%s Child(%d)->" % (genSpaces(), i))
             spaces += 1
             c.display()
 
@@ -267,7 +267,7 @@ class BTree:
             underflow = self.root.delete(key)
             if underflow:
                 # Deal with underflow
-                print "(root) Handle underflow"
+                print("(root) Handle underflow")
                 if len(self.root.keys) == 0:
                     self.root = self.root.children[0]
 
@@ -276,7 +276,7 @@ class BTree:
 
     def _split_root(self, is_leaf):
                 newRoot = BTreeNode(False)
-                medianIndex = len(self.root.keys)/2
+                medianIndex = len(self.root.keys)//2
                 median = self.root.keys[medianIndex]
                 first = BTreeNode(is_leaf)
                 first.keys = self.root.keys[0:medianIndex]
