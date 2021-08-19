@@ -1,5 +1,5 @@
 maxSize = 3
-minSize = maxSize/2
+minSize = maxSize//2
 spaces = 0
 
 def genSpaces():
@@ -215,9 +215,13 @@ class BTreeNode:
                 else:
                     # Not enough space in left child. Append to right child and choose a
                     # median value. Insert the median value into self.keys
-                    print("TODO: Handle")
-                    pass
 
+                    # Rightmost element of left becomes new median - delete it from there
+                    median = left.keys[-1]
+                    left.delete(median)
+                    self.keys.append(median)
+                    self.keys.sort()
+                    
             # Return whether or not we caused an underflow
             return len(self.keys) < minSize
 
@@ -311,3 +315,5 @@ if __name__ == "__main__":
     tree.insert(11)
     tree.insert(25)
     tree.display()
+    import pdb; pdb.set_trace()
+    # Delete 30, then 60 to create unhandled scenario
