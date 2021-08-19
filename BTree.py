@@ -217,6 +217,8 @@ class BTreeNode:
                     # median value. Insert the median value into self.keys
 
                     # Rightmost element of left becomes new median - delete it from there
+                    # TODO: This rule is not always correct - need to determine median
+                    # from concatenation of left and right keys
                     median = left.keys[-1]
                     left.delete(median)
                     self.keys.append(median)
