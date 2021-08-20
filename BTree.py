@@ -216,14 +216,18 @@ class BTreeNode:
                     # Not enough space in left child. Append to right child and choose a
                     # median value. Insert the median value into self.keys
 
-                    # Rightmost element of left becomes new median - delete it from there
-                    # TODO: This rule is not always correct - need to determine median
-                    # from concatenation of left and right keys
-                    median = left.keys[-1]
-                    left.delete(median)
-                    self.keys.append(median)
-                    self.keys.sort()
-                    
+                    temp = left.keys + right.keys
+                    new_median_key = temp[len(temp)//2]
+                    underflow = False
+                    if new_median_key in left.keys:
+                        underflow = left.delete(new_median_key)
+                    else:
+                        underflow = right.delete(new_median_key)
+                    self.keys.append(new_median_key)
+                    # TODO: Handle underflow                    
+                    if underflow:
+                        print('UNHANDLED UNDERFLOW')
+
             # Return whether or not we caused an underflow
             return len(self.keys) < minSize
 
