@@ -85,7 +85,6 @@ class BTreeNode:
             return False
 
     def delete(self, key):
-        print('delete() called')
         # Get index of key to remove if it's in this node
         try:
             idx = self.keys.index(key)
@@ -104,20 +103,17 @@ class BTreeNode:
 
             if underflow:
                 if i-1 >= 0 and len(self.children[i-1].keys) > minSize:
-                    print('Underflow branch 1')
                     # Move keys[i] into underflowing child
                     self.children[i].insert(self.keys[i-1])
                     # Move largest value of left sibling into keys[i]
                     self.keys[i-1] = self.children[i-1].keys[len(self.children[i-1].keys)-1]
                     self.children[i-1].delete(self.keys[i-1])
                 elif i+1 < len(self.children) and len(self.children[i+1].keys) > minSize:
-                    print('Underflow branch 2')
                     self.children[i].insert(self.keys[i])
                     self.keys[i] = self.children[i+1].keys[0]
                     self.children[i+1].delete(self.keys[i])
                 else:
                     if i-1 >= 0:
-                        print('Underflow branch 3.1')
                         # Insert predecessor key into its left child then
                         self.children[i-1].insert(self.keys[i-1])
 
@@ -143,7 +139,6 @@ class BTreeNode:
                         # by the loop above
                         self.children.remove(self.children[len(self.children)-1])
                     else:
-                        print('Underflow branch 3.2')
                         # Insert key into right child then
                         self.children[i+1].insert(self.keys[i])
 
@@ -174,7 +169,6 @@ class BTreeNode:
                     return len(self.keys) < minSize
 
         else:
-            print('Key is in this node')
             # Key is in this node so remove it and handle underflow if necessary
             # - First get left and right child node references
             lenChildren = len(self.children)
@@ -196,7 +190,6 @@ class BTreeNode:
                 lenRight = len(right.keys)
 
                 if lenLeft + lenRight <= maxSize:
-                    print('Left child can absorb right child')
                     # Left child can absorb right child
 
                     # Append keys from right child into left child
@@ -209,7 +202,6 @@ class BTreeNode:
 
                     self.children.remove(right)
                 else:
-                    print('Merge nodes and choose new median')
                     # Not enough space in left child. Append to right child and choose a
                     # median value. Insert the median value into self.keys
 
