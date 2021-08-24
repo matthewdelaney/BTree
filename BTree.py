@@ -1,3 +1,5 @@
+import json
+
 maxSize = 3
 minSize = maxSize//2
 spaces = 0
@@ -236,6 +238,14 @@ class BTreeNode:
         if spaces > 0:
             spaces -= 1
 
+    def json(self):
+        result = []
+        for i, c in enumerate(self.children):
+            result.append(c.json())
+
+        return [k for k in self.keys] + result
+            
+            
 class BTree:
     def __init__(self):
         self.root = BTreeNode(True)
@@ -274,6 +284,9 @@ class BTree:
     def display(self):
         self.root.display()
 
+    def json(self):
+        return json.dumps(self.root.json())
+        
     def _split_root(self, is_leaf):
                 newRoot = BTreeNode(False)
                 medianIndex = len(self.root.keys)//2
