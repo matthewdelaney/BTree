@@ -20,3 +20,35 @@ def test_root_delete2():
         tree.insert(x)
     tree.delete(3)
     assert tree.json() == '[4, [1, 2], [5]]'
+
+def test_underflow_first_child():
+    tree = BTree()
+    for x in range(1, 6):
+        tree.insert(x)
+    tree.delete(1)
+    tree.delete(2)
+    assert tree.json() == '[4, [3], [5]]'
+
+def test_underflow_first_child_reverse_order():
+    tree = BTree()
+    for x in range(1, 6):
+        tree.insert(x)
+    tree.delete(2)
+    tree.delete(1)
+    assert tree.json() == '[4, [3], [5]]'
+
+def test_underflow_second_child():
+    tree = BTree()
+    for x in range(1, 6):
+        tree.insert(x)
+    tree.delete(4)
+    tree.delete(5)
+    assert tree.json() == '[2, [1], [3]]' 
+
+def test_underflow_second_child_reverse_order():
+    tree = BTree()
+    for x in range(1, 6):
+        tree.insert(x)
+    tree.delete(5)
+    tree.delete(4)
+    assert tree.json() == '[2, [1], [3]]' 
