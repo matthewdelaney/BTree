@@ -1,0 +1,6 @@
+tasks:
+  - init: |
+      echo 'Installing pytest'
+      pip install pytest
+    command: |
+      echo 'TODO: start app'
