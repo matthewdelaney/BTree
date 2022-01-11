@@ -60,3 +60,16 @@ def test_root_delete_merges_children():
     tree.delete(90) # Root
     assert tree.json() == '[100, [30, 60, [10, 20], [40, 50], [70, 80]], [120, [110], [130, 140]]]' 
 
+def test_root_delete_merges_children2():
+    tree = BTree()
+    for x in range(10, 130, 10):
+        tree.insert(x)
+    tree.delete(90) # Root
+    assert tree.json() == '[30, 60, 100, [10, 20], [40, 50], [70, 80], [110, 120]]'
+
+def test_root_delete_merges_children3():
+    tree = BTree()
+    for x in range(10, 160, 10):
+        tree.insert(x)
+    tree.delete(90) # Root
+    assert tree.json() == '[100, [30, 60, [10, 20], [40, 50], [70, 80]], [120, [110], [130, 140]]]' 
