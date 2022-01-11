@@ -288,21 +288,21 @@ class BTree:
         return json.dumps(self.root.json())
         
     def _split_root(self, is_leaf):
-                newRoot = BTreeNode(False)
-                medianIndex = len(self.root.keys)//2
-                median = self.root.keys[medianIndex]
-                first = BTreeNode(is_leaf)
-                first.keys = self.root.keys[0:medianIndex]
-                if not is_leaf:
-                    first.children = self.root.children[0:medianIndex+1]
-                second = BTreeNode(is_leaf)
-                second.keys = self.root.keys[medianIndex+1:len(self.root.keys)]
-                if not is_leaf:
-                    second.children = self.root.children[medianIndex+1:len(self.root.children)]
-                newRoot.children.append(first)
-                newRoot.children.append(second)
-                newRoot.keys.append(median)
-                self.root = newRoot
+        newRoot = BTreeNode(False)
+        medianIndex = len(self.root.keys)//2
+        median = self.root.keys[medianIndex]
+        first = BTreeNode(is_leaf)
+        first.keys = self.root.keys[0:medianIndex]
+        if not is_leaf:
+            first.children = self.root.children[0:medianIndex+1]
+        second = BTreeNode(is_leaf)
+        second.keys = self.root.keys[medianIndex+1:len(self.root.keys)]
+        if not is_leaf:
+            second.children = self.root.children[medianIndex+1:len(self.root.children)]
+        newRoot.children.append(first)
+        newRoot.children.append(second)
+        newRoot.keys.append(median)
+        self.root = newRoot
 
 
 if __name__ == "__main__":
