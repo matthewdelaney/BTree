@@ -324,5 +324,4 @@ if __name__ == "__main__":
     tree.insert(11)
     tree.insert(25)
     tree.display()
-    import pdb; pdb.set_trace()
-    # Delete 30, then 60 to create unhandled scenario
+
