@@ -57,7 +57,9 @@ def test_root_delete_merges_children():
     tree = BTree()
     for x in range(10, 150, 10):
         tree.insert(x)
+    import pdb; pdb.set_trace()
     tree.delete(90) # Root
+    import pdb; pdb.set_trace()
     assert tree.json() == '[100, [30, 60, [10, 20], [40, 50], [70, 80]], [120, [110], [130, 140]]]' 
 
 def test_root_delete_merges_children2():
