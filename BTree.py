@@ -203,6 +203,13 @@ class BTreeNode:
                         left.children.append(c)
 
                     self.children.remove(right)
+
+                    # Are there too many children in left? There might be because a node of order N can have N+1 children
+                    if len(left.children) > maxSize + 1:
+                        for k in left.children[maxSize+1].keys:
+                            left.children[maxSize].keys.append(k)
+                        del left.children[maxSize+1]
+                        # TODO: What if the right-most child has children?
                 else:
                     # Not enough space in left child. Append to right child and choose a
                     # median value. Insert the median value into self.keys
