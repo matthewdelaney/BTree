@@ -199,13 +199,8 @@ class BTreeNode:
                         left.keys.append(k)
 
                     # Append children from right child into left child
-                    # TODO: If len(right-children) > 1 then split first right child between last left and first right
                     for c in right.children:
                         left.children.append(c)
-                    if len(left.children) > 4: # TODO: This should not be hard-coded
-                        # TODO: Merge children
-                        import pdb; pdb.set_trace()
-                        print('UNHANDLED: TOO MANY CHILDREN FOR NODE')
 
                     self.children.remove(right)
 
