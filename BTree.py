@@ -198,9 +198,14 @@ class BTreeNode:
                     for k in right.keys:
                         left.keys.append(k)
 
-                    # Append children right child into left child
+                    # Append children from right child into left child
+                    # TODO: If len(right-children) > 1 then split first right child between last left and first right
                     for c in right.children:
                         left.children.append(c)
+                    if len(left.children) > 4: # TODO: This should not be hard-coded
+                        # TODO: Merge children
+                        import pdb; pdb.set_trace()
+                        print('UNHANDLED: TOO MANY CHILDREN FOR NODE')
 
                     self.children.remove(right)
 
@@ -282,6 +287,7 @@ class BTree:
         if self.root.isLeaf:
             self.root.keys.remove(key)
         else:
+            import pdb; pdb.set_trace()
             underflow = self.root.delete(key)
             if underflow:
                 # Deal with underflow
@@ -295,21 +301,21 @@ class BTree:
         return json.dumps(self.root.json())
         
     def _split_root(self, is_leaf):
-                newRoot = BTreeNode(False)
-                medianIndex = len(self.root.keys)//2
-                median = self.root.keys[medianIndex]
-                first = BTreeNode(is_leaf)
-                first.keys = self.root.keys[0:medianIndex]
-                if not is_leaf:
-                    first.children = self.root.children[0:medianIndex+1]
-                second = BTreeNode(is_leaf)
-                second.keys = self.root.keys[medianIndex+1:len(self.root.keys)]
-                if not is_leaf:
-                    second.children = self.root.children[medianIndex+1:len(self.root.children)]
-                newRoot.children.append(first)
-                newRoot.children.append(second)
-                newRoot.keys.append(median)
-                self.root = newRoot
+        newRoot = BTreeNode(False)
+        medianIndex = len(self.root.keys)//2
+        median = self.root.keys[medianIndex]
+        first = BTreeNode(is_leaf)
+        first.keys = self.root.keys[0:medianIndex]
+        if not is_leaf:
+            first.children = self.root.children[0:medianIndex+1]
+        second = BTreeNode(is_leaf)
+        second.keys = self.root.keys[medianIndex+1:len(self.root.keys)]
+        if not is_leaf:
+            second.children = self.root.children[medianIndex+1:len(self.root.children)]
+        newRoot.children.append(first)
+        newRoot.children.append(second)
+        newRoot.keys.append(median)
+        self.root = newRoot
 
 
 if __name__ == "__main__":
@@ -331,5 +337,4 @@ if __name__ == "__main__":
     tree.insert(11)
     tree.insert(25)
     tree.display()
-    import pdb; pdb.set_trace()
-    # Delete 30, then 60 to create unhandled scenario
+
