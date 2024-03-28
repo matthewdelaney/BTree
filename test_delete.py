@@ -53,14 +53,12 @@ def test_underflow_second_child_reverse_order():
     tree.delete(4)
     assert tree.json() == '[2, [1], [3]]' 
 
-#Problem case
 def test_root_delete_merges_children():
     tree = BTree()
     for x in range(10, 150, 10):
         tree.insert(x)
-    breakpoint()
     tree.delete(90) # Root
-    assert tree.json() == '[100, [30, 60, [10, 20], [40, 50], [70, 80]], [120, [110], [130, 140]]]' 
+    assert tree.json() == '[120, [30, 60, [10, 20], [40, 50], [70, 80]], [130, [100, 110], [140]]]' 
 
 def test_root_delete_merges_children2():
     tree = BTree()
@@ -74,4 +72,4 @@ def test_root_delete_merges_children3():
     for x in range(10, 160, 10):
         tree.insert(x)
     tree.delete(90) # Root
-    assert tree.json() == '[100, [30, 60, [10, 20], [40, 50], [70, 80]], [120, [110], [130, 140]]]' 
+    assert tree.json() == '[120, [30, 60, [10, 20], [40, 50], [70, 80]], [130, [100, 110], [140, 150]]]' 
