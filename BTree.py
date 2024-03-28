@@ -4,6 +4,11 @@ maxSize = 3
 minSize = maxSize//2
 spaces = 0
 
+# TODO: The use of a global variable to handle overflows
+#       after node-merging due to a deletion is not
+#       ideal and should be replaced by augmenting
+#       the BTreeNode.delete() method's return value
+#       so that it is a tuple: (underflow, excess_keys)
 excess_keys = []
 
 def genSpaces():
