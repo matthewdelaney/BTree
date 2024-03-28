@@ -282,7 +282,7 @@ class BTree:
         if self.root.isLeaf:
             self.root.keys.remove(key)
         else:
-            breakpoint()
+            #breakpoint()
             underflow = self.root.delete(key)
             if underflow:
                 # Deal with underflow
