@@ -4,6 +4,8 @@ maxSize = 3
 minSize = maxSize//2
 spaces = 0
 
+excess_keys = []
+
 def genSpaces():
     result = ""
 
@@ -87,6 +89,7 @@ class BTreeNode:
             return False
 
     def delete(self, key):
+        global excess_keys
         # Get index of key to remove if it's in this node
         try:
             idx = self.keys.index(key)
@@ -210,6 +213,10 @@ class BTreeNode:
                             left.children[maxSize].keys.append(k)
                         del left.children[maxSize+1]
                         # TODO: What if the right-most child has children?
+                        right_most_child_overflow = len(left.children[-1].keys) > maxSize
+                        if right_most_child_overflow:
+                            excess_keys = left.children[-1].keys[maxSize:]
+                            left.children[-1].keys = [k for k in left.children[-1].keys if k not in excess_keys]
                 else:
                     # Not enough space in left child. Append to right child and choose a
                     # median value. Insert the median value into self.keys
@@ -279,15 +286,23 @@ class BTree:
                 self._split_root(False)
 
     def delete(self, key):
+        global excess_keys
         if self.root.isLeaf:
             self.root.keys.remove(key)
         else:
-            #breakpoint()
             underflow = self.root.delete(key)
             if underflow:
                 # Deal with underflow
                 if len(self.root.keys) == 0:
                     self.root = self.root.children[0]
+        # TODO: This assumes that this only happens at the end
+        # of a delete-call. If it can happen /during/ the
+        # sequence of recursive delete calls then this
+        # global variable approach will probably not work
+        if len(excess_keys) > 0:
+            for k in excess_keys:
+                self.insert(k)
+            excess_keys = []
 
     def display(self):
         self.root.display()
